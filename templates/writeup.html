@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h1>Correct!</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="mx-auto">
+            <div>
+                <h2>Write a short text on how it went</h2>
+                <hr>
+            </div>
+            <form id="writeup_form">
+                <div class="row">
+                    <textarea class="form-control" id="writeup_text" rows="6"></textarea>
+                </div>
+                <br>
+                <input type="submit" value="Submit" class="btn btn-primary col text-center">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('writeup_form');
+    form.addEventListener('submit', submit);
+
+    function submit(event) {
+        event.preventDefault();
+        var text = document.getElementById('writeup_text').value;
+        console.log(text);
+        fetch('', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "CSRF-Token": CTFd.config.csrfNonce
+            },
+            method: "POST",
+            body: JSON.stringify({ writeup_text: text})
+        })
+        .then((res) => {
+            if(res.ok){
+                window.location.href = "/";
+            } else{
+                console.error("POST failed")
+            }
+        })
+
+    }
+</script>
+{% endblock %}
