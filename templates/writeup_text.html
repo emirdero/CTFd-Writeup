@@ -7,7 +7,7 @@
 <div class="jumbotron">
     <div class="container">
         <h3>Challenge: {{challenge_name}}</h3>
-        <h3>Team/user: {{user_name}}</h3>
+        <h3>{% if is_team %}Team{% else %}User{% endif %}: {{user_name}}</h3>
     </div>
 </div>
 <div class="row m-3 justify-content-center">

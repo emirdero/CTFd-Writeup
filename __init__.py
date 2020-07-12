@@ -32,7 +32,7 @@ def load(app):
             db.session.add(writeup)
             db.session.commit()
             db.session.close()
-            return 'Writeup added   '
+            return 'Writeup added'
 
     # Gets the writeup overview page for admins
     @writeup.route('/admin/writeup/overview', methods=['GET'])
@@ -45,7 +45,13 @@ def load(app):
             page = int(request.args.get('page'))
         writeups = Writeups.query
         pages = writeups.count()/writeups_per_page
-        writeups.paginate(page=page, per_page=writeups_per_page)
+        writeups = writeups.paginate(page=page, per_page=writeups_per_page).items
+        for w in writeups:
+            w.challenge_name = Challenges.query.filter_by(id=w.challenge_id).first_or_404().name
+            if w.user_is_team:
+                w.user_name = Teams.query.filter_by(id=w.user_id).first_or_404().name
+            else:
+                w.user_name = Users.query.filter_by(id=w.user_id).first_or_404().name
         return render_template('writeup_overview.html', page=page, pages=pages, writeups=writeups)
 
     # Gets the writeup overview page for admins
