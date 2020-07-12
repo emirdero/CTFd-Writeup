@@ -4,7 +4,7 @@ from CTFd.utils.user import get_current_team
 from CTFd.utils.logging import log
 from CTFd.utils.helpers import get_errors
 from CTFd.utils import get_config
-from CTFd.models import db
+from CTFd.models import db, Challenges, Users, Teams
 from .models import Writeups
 import os 
 import subprocess
@@ -52,9 +52,16 @@ def load(app):
     @writeup.route('/admin/writeup/<int:writeup_id>', methods=['GET'])
     @admins_only
     def admin_writeup_text(writeup_id):
-        # The admin can view the buildfile of all containers
+        # Get the names
         writeup = Writeups.query.filter_by(id=writeup_id).first_or_404()
-        # <pre> tags are so that the newlines are interperated
-        return "<pre>" + writeup.writeup + "</pre>"
+        challenge_name = Challenges.query.filter_by(id=writeup.challenge_id).first_or_404().name
+        print(writeup.challenge_id, challenge_name)
+        writeup_text = writeup.writeup
+        user_name = "placeholder"
+        if writeup.user_is_team:
+            user_name = Teams.query.filter_by(id=writeup.user_id).first_or_404().name
+        else:
+            user_name = Users.query.filter_by(id=writeup.user_id).first_or_404().name
+        return render_template('writeup_text.html', writeup_text=writeup_text, challenge_name=challenge_name, user_name=user_name, is_team=writeup.user_is_team)
 
     app.register_blueprint(writeup)

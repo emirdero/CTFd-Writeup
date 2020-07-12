@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <h3>Challenge: {{challenge_name}}</h3>
+        <h3>Team/user: {{user_name}}</h3>
+    </div>
+</div>
+<div class="row m-3 justify-content-center">
+    <pre>{{writeup_text}}</pre>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
